@@ -4,22 +4,29 @@ Stepper that can display all immediate states of a program is a useful tool for 
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/pause_example.png}
-  \caption{Example of Paused Environment}
-  \label{fig:pause}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.5\textwidth]{img/multi_evaluation.png}
-  \caption{Example of Multiple Environment}
-  \label{fig:multiple}
+  \begin{subfigure}[b]{0.4\textwidth}
+      \centering
+      \includegraphics[width=0.5\textwidth]{img/pause_example.png}
+      \caption{Example of paused environment}
+      \label{fig:pause}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.4\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{img/interactive.png}
+      \caption{Example of multiple environment}
+      \label{fig:multiple}
+  \end{subfigure}
+    \caption{Two programs in \Hazel}
+    \label{fig:intro_example}
 \end{figure}
 
 % Findler et al.[citation] developed a stepper for DrScheme in their programming environment. Cong and Asai [citation] used the contextual dynamics to build a stepper, which takes subexpression out and plug in after evaluation. In this paper, we will use the similar strategy to develop the stepper. 
 
-In Hazel , the incomplete programs are also allowed for evaluation.  There are two examples shown in Figure \ref{fig:multiple}.
+Figure \ref{fig:pause} is an example of expression with a hole. The expression is already simple enough and it is unnecessary to expand cases since the parameter has not provided especially when there are many cases in the function. Therefore, stepper needs to detect this situation so that it will pause until user requires it to progress.
 
+Figure \ref{fig:multiple} shows an expression with three parts. The left part is heavy since it takes many steps to evaluate while user might just want to debug the right lambda part. According to the regular dynamics, there should contain only one way to step for any non-final programs. So, user has to click many times to reduce the left one in order to debug the right one. In the Figure \ref{fig:multiple}, the green boxes contain subexpressions that can be evaluated. So, our solution is just allowing the multiple evaluation contexts so that user can choose the subexpression they need.
 
+The interactive stepper develops pausing environment and a simple algorithm to decompose multiple evaluation contexts. Furthermore, it also has a webview so that user can click green or yellow boxes to step expressions. 
 
-In the first example, the expression is already simple enough and it is unnecessary to expand cases since the parameter has not provided. Therefore, stepper need to detect this situation so that it will pause until user requires it to progress. Another example has an expression with two parts. The left part is heavy since it takes about 16 steps to final while user might just want to debug the right part. According to the regular dynamics, there should contain only one way to step for any non-final programs. So, user has to click 16 times to reduce the left one in order to debug the right one. The possible solution is just allowing the multiple evaluation contexts so that user can choose the subexpression they need. This paper develops a stepper with multiple evaluation contexts and pausing environment.
+\parahead{Contributions} The contributions of this paper are: (1) a pausing environment in section ~\ref{}; (2) an algorithm to decompose multiple evaluation contexts in section ~\ref{}.
