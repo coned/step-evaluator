@@ -186,36 +186,9 @@
 %% information and builds the first part of the formatted document.
 \maketitle
 
-\section{Introduction}
 
-Stepper that can display all immediate states of a program is a useful tool for debugging and education. [two citations about previous stepper works]. In Hazel programming language, the incomplete programs are also allowed for evaluation. It contains an extra variable called hole indicating the place that needs to fill. Here are some examples.
 
-[Paused example] [multiple environment example]
 
-In the first example, the expression is already simple enough and it is unnecessary to expand cases since the parameter has not provided. Therefore, stepper need to detect this situation so that it will pause until user requires it to progress. Another example has an expression with two parts. The left part is heavy since it takes about 16 steps to final while user might just want to debug the right part. According to the regular dynamics, there should contain only one way to step for any non-final programs. So, user has to click 16 times to reduce the left one in order to debug the right one. The possible solution is just allowing the multiple evaluation contexts so that user can choose the subexpression they need. This paper develops a stepper with multiple evaluation contexts and pausing environment.
-
-\section{Contextual Dynamics}
-
-The syntax of DH-types and DH-expression is shown in Figure \ref{fig:syntax}. We use the simplified definition given in [Omar] combined with number and addition. 
-%TODO number and addition is not sound
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{syntax.png}
-  \caption{Syntax}
-  \label{fig:syntax}
-\end{figure}
-
-The structure of the stepper is shown in Figure []. The expression is first decomposed into many independent evaluation contexts. Then, user may choose one of them to progress. And the stepper will compose them into the result then. For example, in Figure [], we have 3 evaluation contexts highlighted as green boxes. And when we click the second one, only the expression in second box is evaluated and composed into the whole expression.
-
-Also, for some unnecessary steps, the stepper can detect it and then pause unless user click it manually. So, during the decompose, we need to detect this situation so that the stepper will not go on again. An example is shown in Figure []..... 
-
-We now formally define the instruction transition judgement. We use $d_1 \to d_2$ as instruction transition judgement. Figure [] shows some of the transition judgement.
-
-In Hazel, we have four types of expressions: boxed value, indeterminate, step, and paused. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable. %%TODO: not my works
-
-Then, we have the evaluation context. Unlike the regular evaluation context, the decompose function will return a list of contexts. The recursive definition of the decompose function is shown in Figure [].
-
-In conclusion, we first decompose the expression into many evaluation contexts for user to choose. Then, we run the instruction transition and compose the result to user. 
 
 % \section{Acknowledgments}
 
@@ -269,9 +242,9 @@ In conclusion, we first decompose the expression into many evaluation contexts f
 %% (and NOT an unnumbered section). This ensures the proper
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
-\begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
-\end{acks}
+% \begin{acks}
+% To Robert, for the bagels and explaining CMYK and color spaces.
+% \end{acks}
 
 %%
 %% The next two lines define the bibliography style to be used, and
