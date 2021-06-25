@@ -1,0 +1,5 @@
+\section{Pausing environment}
+
+We formally define the syntax for discussion. The formal syntax is defined below in Figure \ref{}. $\ehole$ is the empty hole used to fill the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings.
+
+Normally, we have judegment like Final, BoxedValue and since \Hazel contains incomplete programs, it means there exists some indeterminate programs [citation]. Pausing environment is introduced by extra judgement, Paused. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{} gives a expression for that. Also, Figure \ref{} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box.
