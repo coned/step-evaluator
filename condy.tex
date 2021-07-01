@@ -2,7 +2,7 @@
 \label{sec:condy}
 
 
-The structure of the stepper is shown in Figure \ref{fig:structure}. The expression is first decomposed into many independent evaluation contexts. Then, user may choose one of them to progress. And the stepper will compose them into the result then. For example, in Figure \ref{fig:multiple}, we have 3 evaluation contexts highlighted as green boxes. And when we click the second one, only the expression in second box is evaluated and composed into the whole expression.
+The structure of the stepper is shown in Figure \ref{fig:structure}. The expression is first decomposed into many independent evaluation contexts. Then, user may choose one of them to step. And the stepper will compose them into the final result then. For example, in Figure \ref{fig:multiple}, we have 3 evaluation contexts highlighted as green boxes. And when we click the second one, only the expression in second box is evaluated and composed into the whole expression.
 
 \begin{figure}[htbp]
   \centering
@@ -11,11 +11,11 @@ The structure of the stepper is shown in Figure \ref{fig:structure}. The express
   \label{fig:structure}
 \end{figure}
 
-We now formally define the instruction transition judgement. We use $\htrans{e_1}{e_2}$ as instruction transition judgement. Figure \ref{fig:decompose} shows some of the transition judgement.
+We now formally define the instruction transition judgement. We use $\htrans{e_1}{e_2}$ as instruction transition judgement. Figure \ref{fig:decompose} shows some of the transition judgements.
 
-As what Section \ref{} discussed, in \Hazel, we have four types of expressions: boxed value, indeterminate, step, and paused. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable.
+% As what Section \ref{sec:pause} discussed, in \Hazel, we have four types of expressions: $\mathtt{boxedvalue}$, $\mathtt{indet}$, $\mathtt{final}$, and $\mathtt{paused}$. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable.
 
-Then, we have the evaluation context. Unlike the regular evaluation context, the decompose function will return a list of contexts. The recursive definition of the decompose function is shown in Figure \ref{fig:decompose}.
+Then, we formally define the evaluation context. Unlike the regular evaluation context, the decompose function will return a list of contexts. The decompose function is defined recursively. Figure \ref{fig:decompose} provides some of inference rules for decompose function.
 
 \begin{figure}[htbp]
   \vspace{-3px} 
@@ -25,7 +25,7 @@ Then, we have the evaluation context. Unlike the regular evaluation context, the
       %\hfill
       \inferrule[]{\isFinal{e_2}
           }{
-            \htrans{\hap{\lamfunc{x}{d_1}}{d_2}}{[d_2/x]d_1}
+            \htrans{\hap{\lamfunc{x}{e_1}}{e_2}}{[e_2/x]e_1}
           }
       %\hfill
   \end{mathpar}
@@ -79,5 +79,3 @@ $$
 \hdecom{4 + 1 + (5 + 6)}{[\hcontext{(\circ + (5 + 6))}{4 + 1}, \hcontext{(4 + 1 + \circ)}{5 + 6}]}.
 $$
 User may choose second one so that the stepper will first evaluate $5 + 6$ and put result into mark. Hence, we get $4 + 1+ 11$ finally.
-
-In conclusion, we first decompose the expression into many evaluation contexts for user to choose. Then, we run the instruction transition and compose the result to user. 
