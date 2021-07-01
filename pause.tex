@@ -1,5 +1,68 @@
 \section{Pausing environment}
 
-We formally define the syntax for discussion. The formal syntax is defined below in Figure \ref{}. $\ehole$ is the empty hole used to fill the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings.
+We formally define the syntax for discussion. The formal syntax is defined below in Figure \ref{fig:syntax}. $\ehole$ is the empty hole used to fill the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings.
 
-Normally, we have judegment like Final, BoxedValue and since \Hazel contains incomplete programs, it means there exists some indeterminate programs [citation]. Pausing environment is introduced by extra judgement, Paused. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{} gives a expression for that. Also, Figure \ref{} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box.
+\begin{figure}[htbp]
+    \vspace{-3px} 
+  $\arraycolsep=4pt\begin{array}{lll}
+  HTyp~~ \tau & ::= &
+    \tnum  ~\vert~
+    \tarr{\tau}{\tau} ~\vert~
+    (\tau + \tau) ~\vert~
+    \ehole^A
+    \\
+  HExp~~ e & ::= &
+    x ~\vert~
+    \lamfunc{x}{e} ~\vert~
+    \lamfunc{x:\tau}{e} ~\vert~
+    e(e) ~\vert~
+    \underlinenum{n} ~\vert~
+    (e+e) ~\vert~
+    e: \tau ~\vert~
+    \hinj{i}{e} ~\vert~
+    \hcase{e}{x}{e}{y}{e}~\vert~
+    \ehole  ~\vert~
+    \notehole{e} 
+  \end{array}$
+  \hrule
+  \caption{Syntax of H-types, H-expressions, and Type Constraint Set}
+    \label{fig:syntax}
+    \vspace{-5px}
+\end{figure}
+
+\begin{figure}[htbp]
+    \vspace{-3px} 
+    \fbox{ $\isPaused{e} $}~~\text{$e$ is paused}\hfill
+    \begin{subequations}\label{eqns:paused}
+    \begin{mathpar}
+        %\hfill
+        \inferrule[]{\isIndet{e_0}
+            }{
+              \isPaused{\hcase{e_0}{x}{e_1}{y}{e_2}}
+            }
+        %\hfill
+    \end{mathpar}
+  \end{subequations}
+  \caption{Paused Forms}
+  \label{fig:paused_forms}
+    \vspace{-5px}
+\end{figure}
+
+Normally, we have judgement like Final, BoxedValue and since \Hazel contains incomplete programs, it means there exists some indeterminate programs [citation]. Pausing environment is introduced by extra judgement, Paused. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause1} gives a expression for that. Also, Figure \ref{fig:pause2} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.4\textwidth]{img/case1.png}
+        \caption{}
+        \label{fig:pause1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/case2.png}
+        \caption{}
+        \label{fig:pause2}
+    \end{subfigure}
+    \caption{Example of stepper with paused environment}
+\end{figure}

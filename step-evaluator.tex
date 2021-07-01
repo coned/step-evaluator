@@ -80,7 +80,14 @@
 %% Uncommenting
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
-
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./img/}{#1.pdf_tex}
+}
 %%
 %% end of the preamble, start of the body of the document source.
 \begin{document}

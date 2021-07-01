@@ -6,32 +6,78 @@ The structure of the stepper is shown in Figure \ref{fig:structure}. The express
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.5\textwidth]{structure.png}
-  \caption{Sturcture of Stepper}
+  \includegraphics[width=0.5\textwidth]{img/struct.png}
+  \caption{Structure of Stepper}
   \label{fig:structure}
 \end{figure}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{instr_trans.png}
-  \caption{Instruction Transition}
-  \label{fig:instr_trans}
-\end{figure}
-
-We now formally define the instruction transition judgement. We use $d_1 \to d_2$ as instruction transition judgement. Figure \ref{fig:instr_trans} shows some of the transition judgement.
+We now formally define the instruction transition judgement. We use $\htrans{e_1}{e_2}$ as instruction transition judgement. Figure \ref{fig:decompose} shows some of the transition judgement.
 
 As what Section \ref{} discussed, in \Hazel, we have four types of expressions: boxed value, indeterminate, step, and paused. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable.
 
 Then, we have the evaluation context. Unlike the regular evaluation context, the decompose function will return a list of contexts. The recursive definition of the decompose function is shown in Figure \ref{fig:decompose}.
 
 \begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{context.png}
-  \includegraphics[width=0.7\textwidth]{decompose.png}
-  \caption{Decompose}
+  \vspace{-3px} 
+  \fbox{ $\htrans{e}{e'} $}~~\text{$e$ takes an instruction transition to $e'$}\hfill
+  \begin{subequations}\label{eqns:instr_trans}
+  \begin{mathpar}
+      %\hfill
+      \inferrule[]{\isFinal{e_2}
+          }{
+            \htrans{\hap{\lamfunc{x}{d_1}}{d_2}}{[d_2/x]d_1}
+          }
+      %\hfill
+  \end{mathpar}
+\end{subequations}
+
+$\arraycolsep=4pt\begin{array}{lll}
+\text{EvalCtx}~~ \epsilon & ::= &
+  \circ  ~\vert~
+  \hap{\epsilon}{e} ~\vert~
+  \hap{e}{\epsilon} ~\vert~
+  \hhole{\epsilon} ~\vert~
+  \epsilon + e ~\vert~
+  e + \epsilon
+\end{array}$
+
+\fbox{ $\hdecom{e}{[\hcontext{\epsilon_1}{e_1}, \hcontext{\epsilon_2}{e_2}, \cdots]} $}~~\text{$e$ is decomposed into contexts $\hcontext{\epsilon_1}{e_1}$, $\hcontext{\epsilon_2}{e_2}$, $\cdots$}\hfill
+  \begin{subequations}\label{eqns:decompose}
+  \begin{mathpar}
+      \hfill
+      \inferrule[DFinal]{\isFinal{e}
+          }{
+            \hdecom{e}{[]}
+          }\hfill
+      \inferrule[DBoxedVal]{\isBoxed{e}}{
+        \hdecom{e}{[\hcontext{\circ}{e}]}
+      }\hfill
+      \inferrule[DApFinal]{\isFinal{e_1} ~~\isFinal{e_2}}{\hdecom{\hap{e_1}{e_2}}{[\hcontext{\circ}{\hap{e_1}{e_2}}]}}
+      \hfill\hfill
+  \end{mathpar}
+  \begin{mathpar}
+    \hfill
+      \inferrule[DAp]{\hdecom{e_1}{[\hcontext{\epsilon_1}{e_1'}, \cdots]}\\ \hdecom{e_2}{[\hcontext{\epsilon_2}{e_2'}, \cdots]}}{\hdecom{\hap{e_1}{e_2}}{[\hcontext{\hap{\epsilon_1}{e_2}}{e_1'}, \cdots, \hcontext{\hap{e_1}{\epsilon_2}}{e_2'}, \cdots]}}
+      \hfill\hfill
+  \end{mathpar}
+  \begin{mathpar}
+    \hfill
+    \inferrule[DHoleFinal]{\isFinal{e}}{\hdecom{\hhole{e}}{[\hcontext{\circ}{\hhole{e}}]}}
+      \hfill
+      \inferrule[DAdd]{\hdecom{e_1}{[\hcontext{\epsilon_1}{e_1'}, \cdots]}\\ \hdecom{e_2}{[\hcontext{\epsilon_2}{e_2'}, \cdots]}}{\hdecom{(e_1 + e_2)}{[\hcontext{(\epsilon_1 + e_2)}{e_1'}, \cdots, \hcontext{(e_1 + \epsilon_2)}{e_2'}, \cdots]}}\hfill\hfill
+  \end{mathpar}
+\end{subequations}
+\hrule
+\caption{Insturction transition and decomposition}
   \label{fig:decompose}
+  \vspace{-5px}
 \end{figure}
 
-%TODO: an example
+
+For example, we have an expression $e_0 = 4 + 1 + (5 + 6)$. First, we know that $\hdecom{4 + 1}{[\hcontext{\circ}{4 + 1}]}$ and $\hdecom{5 + 6}{[\hcontext{\circ}{5 + 6}]}$. So, According to $\mathtt{DAdd}$ rule, we have,
+$$
+\hdecom{4 + 1 + (5 + 6)}{[\hcontext{(\circ + (5 + 6))}{4 + 1}, \hcontext{(4 + 1 + \circ)}{5 + 6}]}.
+$$
+User may choose second one so that the stepper will first evaluate $5 + 6$ and put result into mark. Hence, we get $4 + 1+ 11$ finally.
 
 In conclusion, we first decompose the expression into many evaluation contexts for user to choose. Then, we run the instruction transition and compose the result to user. 
