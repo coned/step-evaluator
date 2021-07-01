@@ -1,6 +1,7 @@
 \section{Pausing environment}
+\label{sec:pause}
 
-We formally define the syntax for discussion. The formal syntax is defined below in Figure \ref{fig:syntax}. $\ehole$ is the empty hole used to fill the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings.
+We first formally define the simplified syntax of \Hazel shown in Figure \ref{fig:syntax}. The symbol $\ehole$ represents the empty hole used to indicate the place that need to fill in the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings. We only consider binary sums so for $\hinj{i}{e}$,  $i \in \{L, R\}$.
 
 \begin{figure}[htbp]
     \vspace{-3px} 
@@ -48,7 +49,7 @@ We formally define the syntax for discussion. The formal syntax is defined below
     \vspace{-5px}
 \end{figure}
 
-Normally, we have judgement like Final, BoxedValue and since \Hazel contains incomplete programs, it means there exists some indeterminate programs [citation]. Pausing environment is introduced by extra judgement, Paused. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause1} gives a expression for that. Also, Figure \ref{fig:pause2} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box.
+Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing environment is introduced by an extra judgement, $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause1} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, Figure \ref{fig:pause2} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
 
 \begin{figure}[htbp]
     \centering
