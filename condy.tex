@@ -20,16 +20,17 @@ Then, we formally define the evaluation context. Unlike the regular evaluation c
 \begin{figure}[htbp]
   \vspace{-3px} 
   \fbox{ $\htrans{e}{e'} $}~~\text{$e$ takes an instruction transition to $e'$}\hfill
-  \begin{subequations}\label{eqns:instr_trans}
-  \begin{mathpar}
-      %\hfill
-      \inferrule[]{\isFinal{e_2}
-          }{
-            \htrans{\hap{\lamfunc{x}{e_1}}{e_2}}{[e_2/x]e_1}
-          }
-      %\hfill
-  \end{mathpar}
-\end{subequations}
+  \begin{subequations}
+  \label{eqns:instr_trans}
+    \begin{mathpar}
+        %\hfill
+        \inferrule[]{\isFinal{e_2}
+            }{
+              \htrans{\hap{\lamfunc{x}{e_1}}{e_2}}{[e_2/x]e_1}
+            }
+        %\hfill
+    \end{mathpar}
+  \end{subequations}
 
 $\arraycolsep=4pt\begin{array}{lll}
 \text{EvalCtx}~~ \epsilon & ::= &
@@ -49,9 +50,6 @@ $\arraycolsep=4pt\begin{array}{lll}
           }{
             \hdecom{e}{[]}
           }\hfill
-      \inferrule[DBoxedVal]{\isBoxed{e}}{
-        \hdecom{e}{[\hcontext{\circ}{e}]}
-      }\hfill
       \inferrule[DApFinal]{\isFinal{e_1} ~~\isFinal{e_2}}{\hdecom{\hap{e_1}{e_2}}{[\hcontext{\circ}{\hap{e_1}{e_2}}]}}
       \hfill\hfill
   \end{mathpar}
@@ -62,7 +60,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{mathpar}
   \begin{mathpar}
     \hfill
-    \inferrule[DHoleFinal]{\isFinal{e}}{\hdecom{\hhole{e}}{[\hcontext{\circ}{\hhole{e}}]}}
+    \inferrule[DHole]{\hdecom{e}{[\hcontext{\epsilon}{e'}, \cdots]}}{\hdecom{\hhole{e}}{[\hcontext{\hhole{\epsilon}}{e'}]}}
       \hfill
       \inferrule[DAdd]{\hdecom{e_1}{[\hcontext{\epsilon_1}{e_1'}, \cdots]}\\ \hdecom{e_2}{[\hcontext{\epsilon_2}{e_2'}, \cdots]}}{\hdecom{(e_1 + e_2)}{[\hcontext{(\epsilon_1 + e_2)}{e_1'}, \cdots, \hcontext{(e_1 + \epsilon_2)}{e_2'}, \cdots]}}\hfill\hfill
   \end{mathpar}

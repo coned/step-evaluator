@@ -66,16 +66,21 @@ We first formally define the simplified syntax of \Hazel shown in Figure \ref{fi
               \isPaused{e_1 + e_2}
             }
         \hfill
+        \inferrule[PHole]{ \isPaused{e}
+            }{
+              \isPaused{\hhole{e}}
+            }
+        \hfill
         \hfill
     \end{mathpar}
     
-  \end{subequations}
-  \caption{Paused Forms}
-  \label{fig:paused_forms}
+    \end{subequations}
+    \caption{Paused Forms}
+    \label{fig:paused_forms}
     \vspace{-5px}
 \end{figure}
 
-Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing environment is introduced by an extra judgement, $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, the result in bottom shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
+Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing judgement is noted as $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, the result in bottom shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
 
 % \begin{figure}[htbp]
 %     \centering
