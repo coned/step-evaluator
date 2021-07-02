@@ -36,34 +36,60 @@ We first formally define the simplified syntax of \Hazel shown in Figure \ref{fi
     \fbox{ $\isPaused{e} $}~~\text{$e$ is paused}\hfill
     \begin{subequations}\label{eqns:paused}
     \begin{mathpar}
-        %\hfill
-        \inferrule[]{\isIndet{e_0}
+        \hfill
+        \inferrule[PCase]{
             }{
-              \isPaused{\hcase{e_0}{x}{e_1}{y}{e_2}}
+              \isPaused{\hcase{\ehole}{x}{e_1}{y}{e_2}}
             }
-        %\hfill
+        \hfill
+        \inferrule[PAp1]{ \isPaused{e_1}
+            }{
+              \isPaused{\hap{e_1}{e_2}}
+            }
+        \hfill
+        \inferrule[PAp2]{ \isPaused{e_2}
+            }{
+              \isPaused{\hap{e_1}{e_2}}
+            }
+        \hfill
+        \hfill
     \end{mathpar}
+    \begin{mathpar}
+        \hfill
+        \inferrule[PAdd1]{ \isPaused{e_1}
+            }{
+              \isPaused{e_1 + e_2}
+            }
+        \hfill
+        \inferrule[PAdd2]{ \isPaused{e_2}
+            }{
+              \isPaused{e_1 + e_2}
+            }
+        \hfill
+        \hfill
+    \end{mathpar}
+    
   \end{subequations}
   \caption{Paused Forms}
   \label{fig:paused_forms}
     \vspace{-5px}
 \end{figure}
 
-Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing environment is introduced by an extra judgement, $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause1} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, Figure \ref{fig:pause2} shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
+Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing environment is introduced by an extra judgement, $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, the result in bottom shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
 
-\begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-        \centering
-        \includegraphics[width=0.4\textwidth]{img/case1.png}
-        \caption{}
-        \label{fig:pause1}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.4\textwidth}
-        \centering
-        \includegraphics[width=0.5\textwidth]{img/case2.png}
-        \caption{}
-        \label{fig:pause2}
-    \end{subfigure}
-    \caption{Example of stepper with paused environment}
-\end{figure}
+% \begin{figure}[htbp]
+%     \centering
+%     \begin{subfigure}[b]{0.4\textwidth}
+%         \centering
+%         \includegraphics[width=0.4\textwidth]{img/case1.png}
+%         \caption{}
+%         \label{fig:pause1}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.4\textwidth}
+%         \centering
+%         \includegraphics[width=0.5\textwidth]{img/case2.png}
+%         \caption{}
+%         \label{fig:pause2}
+%     \end{subfigure}
+%     \caption{Example of stepper with paused environment}
+% \end{figure}
