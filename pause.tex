@@ -1,7 +1,7 @@
 \section{Pausing environment}
 \label{sec:pause}
 
-We first formally define the simplified syntax of \Hazel shown in Figure \ref{fig:syntax}. The symbol $\ehole$ represents the empty hole used to indicate the place that need to fill in the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings. We only consider binary sums so for $\hinj{i}{e}$,  $i \in \{L, R\}$.
+We first formally define the simplified syntax of \Hazel shown in Figure \ref{fig:syntax} \cite{HazelLive}. The symbol $\ehole$ represents the empty hole used to indicate the place that need to fill in the incomplete program. And for the expression that doesn't have clear meaning, we use $\llparenthesiscolor e \rrparenthesiscolor$ to indicate that it doesn't have semantic meanings. We only consider binary sums so for $\hinj{i}{e}$,  $i \in \{L, R\}$.
 
 \begin{figure}[htbp]
     \vspace{-3px} 
@@ -26,7 +26,7 @@ We first formally define the simplified syntax of \Hazel shown in Figure \ref{fi
     \notehole{e} 
   \end{array}$
   \hrule
-  \caption{Syntax of H-types, H-expressions, and Type Constraint Set}
+  \caption{Syntax of H-types, H-expressions}
     \label{fig:syntax}
     \vspace{-5px}
 \end{figure}
@@ -37,10 +37,18 @@ We first formally define the simplified syntax of \Hazel shown in Figure \ref{fi
     \begin{subequations}\label{eqns:paused}
     \begin{mathpar}
         \hfill
-        \inferrule[PCase]{
+        \inferrule[PCaseHole]{
             }{
-              \isPaused{\hcase{\ehole}{x}{e_1}{y}{e_2}}
+              \isPaused{\hap{\lamfunc{z}{\hcase{z}{x}{e_1}{y}{e_2}}}{\ehole}}
             }
+        \hfill
+        \inferrule[PCase]{ \isPaused{e_0}
+            }{
+              \isPaused{\hcase{e_0}{x}{e_1}{y}{e_2}}
+            }
+        \hfill\hfill
+    \end{mathpar}
+    \begin{mathpar}
         \hfill
         \inferrule[PAp1]{ \isPaused{e_1}
             }{
@@ -75,12 +83,12 @@ We first formally define the simplified syntax of \Hazel shown in Figure \ref{fi
     \end{mathpar}
     
     \end{subequations}
-    \caption{Paused Forms}
+    \caption{Paused forms}
     \label{fig:paused_forms}
     \vspace{-5px}
 \end{figure}
 
-Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs [citation] which induces a judgement called $\mathtt{indet}$. Pausing judgement is noted as $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, the result in bottom shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
+Normally, we have judgement like $\mathtt{final}$, $\mathtt{boxedvalue}$ for a program. Furthermore, since \Hazel contains incomplete programs, there exists some indeterminate programs which induces a judgement called $\mathtt{indet}$ \cite{HazelnutPOPL}. Pausing judgement is noted as $\mathtt{paused}$. For example, when $\ehole$ appears at case expression so that the match algorithm gives indeterminate result, it will be a paused expression so that the stepper can stop immediately. Figure \ref{fig:pause} gives a expression as example. It defines a function func. But we don't provide any argument for it. The evaluator expand the case expression directly. However, the result in bottom shows an example that when augment is only a hole, the stepper will not evaluate but stop with yellow box indicating it is steppable but paused.
 
 % \begin{figure}[htbp]
 %     \centering
