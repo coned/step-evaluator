@@ -3,7 +3,7 @@
 
 
 
-The structure of our stepper is shown in Figure \ref{fig:structure}. We use the similar structure developed by \citet{cong_implementing_nodate}. The expression is first decomposed into many independent evaluation contexts. Then, user may choose one of them to step. And the stepper will compose them into final result. For example, in Figure \ref{fig:multiple}, we have 3 evaluation contexts highlighted as green boxes. And when we click the second one, only the expression in second box is evaluated and composed into the whole expression.
+The structure of our stepper is shown in Figure \ref{fig:structure}. We use the similar structure developed by \citet{cong_implementing_nodate}. The expression is first decomposed into many independent evaluation contexts. Then, user may choose one of them to step. And the stepper will compose them into final result. For example, in Figure \ref{fig:multiple}, we have 3 evaluation contexts highlighted as green boxes. And when we click the third one, only the expression in third box is evaluated and then composed into the whole expression.
 
 \begin{figure}[htbp]
   \centering
@@ -16,7 +16,17 @@ We now formally define the instruction transition judgement. We use $\htrans{e_1
 
 % As what Section \ref{sec:pause} discussed, in \Hazel, we have four types of expressions: $\mathtt{boxedvalue}$, $\mathtt{indet}$, $\mathtt{final}$, and $\mathtt{paused}$. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable.
 
-Then, we formally define the evaluation context. Unlike the regular evaluation context, the decompose function will return a list of contexts. The decompose function is defined recursively. Figure \ref{fig:decompose} provides some of inference rules for decompose function.
+Then, we have the formal definition of evaluation context. We show some of rules in Figure \ref{fig:decompose}. For any expression, we define the decompose function $\mathtt{decompose}(e)$ which returns all evaluation contexts of $e$. The formal definition is given below:
+$$ \mathtt{decompose}(e) = \{ \epsilon\{e'\} | e = \epsilon\{e'\} \text{ and not } e' \mathtt{final} \}. $$
+
+Unlike the regular evaluation context, this decompose function $\mathtt{decompose}$ will return a list of contexts. In general, we can see that if $\isFinal{e}$, $\mathtt{decompose}(e) = \emptyset$. We use addition as an example of non-final expressions. For expression $e_1 + e_2$, if both of them are final, we have $\mathtt{decompose}(e_1 + e_2) = \{ \hcontext{\circ}{e_1+e_2} \}$. Otherwise, 
+
+
+\begin{align*}
+  \mathtt{decompose}(e_1 + e_2) &= \{ \hcontext{(\epsilon_1 + e_2)}{e_1'} | \hcontext{\epsilon_1}{e_1'} \in \mathtt{decompose}(e_1)\} \\
+  &\cup \{ \hcontext{(e_1 + \epsilon_2)}{e_2'} | \hcontext{\epsilon_2}{e_2'} \in \mathtt{decompose}(e_2)\}.
+\end{align*}
+
 
 \begin{figure}[htbp]
   \vspace{-3px} 
@@ -43,27 +53,17 @@ $\arraycolsep=4pt\begin{array}{lll}
   e + \epsilon
 \end{array}$
 
-\fbox{ $\hdecom{e}{[\hcontext{\epsilon_1}{e_1}, \hcontext{\epsilon_2}{e_2}, \cdots]} $}~~\text{$e$ is decomposed into contexts $\hcontext{\epsilon_1}{e_1}$, $\hcontext{\epsilon_2}{e_2}$, $\cdots$}\hfill
+\fbox{ $e = \hcontext{\epsilon}{e'}$}~~\text{$e$ is obtained by replacing the mark in $\epsilon$ with $e'$}\hfill
   \begin{subequations}\label{eqns:decompose}
   \begin{mathpar}
       \hfill
-      \inferrule[DFinal]{\isFinal{e}
+      \inferrule[FHOuter]{
           }{
-            \hdecom{e}{[]}
+            e = \hcontext{\circ}{e}
           }\hfill
-      \inferrule[DApFinal]{\isFinal{e_1} ~~\isFinal{e_2}}{\hdecom{\hap{e_1}{e_2}}{[\hcontext{\circ}{\hap{e_1}{e_2}}]}}
-      \hfill\hfill
-  \end{mathpar}
-  \begin{mathpar}
-    \hfill
-      \inferrule[DAp]{\hdecom{e_1}{[\hcontext{\epsilon_1}{e_1'}, \cdots]}\\ \hdecom{e_2}{[\hcontext{\epsilon_2}{e_2'}, \cdots]}}{\hdecom{\hap{e_1}{e_2}}{[\hcontext{\hap{\epsilon_1}{e_2}}{e_1'}, \cdots, \hcontext{\hap{e_1}{\epsilon_2}}{e_2'}, \cdots]}}
-      \hfill\hfill
-  \end{mathpar}
-  \begin{mathpar}
-    \hfill
-    \inferrule[DHole]{\hdecom{e}{[\hcontext{\epsilon}{e'}, \cdots]}}{\hdecom{\hhole{e}}{[\hcontext{\hhole{\epsilon}}{e'}]}}
+      \inferrule[FHAp1]{e_1 = \hcontext{\epsilon_1}{e_1'}}{\hap{e_1}{e_2} = \hcontext{\hap{\epsilon_1}{e_2}}{e_1'}}\hfill
+      \inferrule[FHAp2]{e_2 = \hcontext{\epsilon_2}{e_2'}}{\hap{e_1}{e_2} = \hcontext{\hap{e_1}{\epsilon_2}}{e_2'}}\hfill
       \hfill
-      \inferrule[DAdd]{\hdecom{e_1}{[\hcontext{\epsilon_1}{e_1'}, \cdots]}\\ \hdecom{e_2}{[\hcontext{\epsilon_2}{e_2'}, \cdots]}}{\hdecom{(e_1 + e_2)}{[\hcontext{(\epsilon_1 + e_2)}{e_1'}, \cdots, \hcontext{(e_1 + \epsilon_2)}{e_2'}, \cdots]}}\hfill\hfill
   \end{mathpar}
 \end{subequations}
 \hrule
@@ -73,7 +73,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{figure}
 
 
-For example, we have an expression $e_0 = 4 + 1 + (5 + 6)$. First, we know that $\hdecom{4 + 1}{[\hcontext{\circ}{4 + 1}]}$ and $\hdecom{5 + 6}{[\hcontext{\circ}{5 + 6}]}$. So, According to $\mathtt{DAdd}$ rule, we have,
+For example, we have an expression $e_0 = 4 + 1 + (5 + 6)$. First, we know that $\hdecom{4 + 1}{[\hcontext{\circ}{4 + 1}]}$ and $\hdecom{5 + 6}{[\hcontext{\circ}{5 + 6}]}$. So, According to the definition, we have,
 $$
 \hdecom{4 + 1 + (5 + 6)}{[\hcontext{(\circ + (5 + 6))}{4 + 1}, \hcontext{(4 + 1 + \circ)}{5 + 6}]}.
 $$
