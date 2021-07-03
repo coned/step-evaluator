@@ -12,14 +12,10 @@ The structure of our stepper is shown in Figure \ref{fig:structure}. We use the 
   \label{fig:structure}
 \end{figure}
 
-We now formally define the instruction transition judgement. We use $\htrans{e_1}{e_2}$ as instruction transition judgement. Figure \ref{fig:decompose} shows some of the transition judgements.
-
-% As what Section \ref{sec:pause} discussed, in \Hazel, we have four types of expressions: $\mathtt{boxedvalue}$, $\mathtt{indet}$, $\mathtt{final}$, and $\mathtt{paused}$. The instruction transition can be implemented to provide the type of the expressions. Therefore, we can easily know whether an expression is final, paused or steppable.
-
-Then, we have the formal definition of evaluation context. We show some of rules in Figure \ref{fig:decompose}. For any expression, we define the decompose function $\mathtt{decompose}(e)$ which returns all evaluation contexts of $e$. The formal definition is given below:
+We now formally define the instruction transition judgement denoted as $\htrans{e_1}{e_2}$. Figure \ref{fig:decompose} shows some of the transition judgements. Then, we have the formal definition of evaluation context. We show some of rules in Figure \ref{fig:decompose}. For any expression, we define the decompose function $\mathtt{decompose}(e)$ which returns all evaluation contexts of $e$. The formal definition is given below:
 $$ \mathtt{decompose}(e) = \{ \epsilon\{e'\} | e = \epsilon\{e'\} \text{ and not } e' \mathtt{final} \}. $$
 
-Unlike the regular evaluation context, this decompose function $\mathtt{decompose}$ will return a list of contexts. In general, we can see that if $\isFinal{e}$, $\mathtt{decompose}(e) = \emptyset$. We use addition as an example of non-final expressions. For expression $e_1 + e_2$, if both of them are final, we have $\mathtt{decompose}(e_1 + e_2) = \{ \hcontext{\circ}{e_1+e_2} \}$. Otherwise, 
+Unlike the regular evaluation context, this decompose function $\mathtt{decompose}$ will return a list of contexts that are steppable. So, there is a condition that $e'$ is not final. In general, we can see that if $\isFinal{e}$, $\mathtt{decompose}(e) = \emptyset$. We use addition as an example of non-final expressions. For expression $e_1 + e_2$, if both of them are final, we have $\mathtt{decompose}(e_1 + e_2) = \{ \hcontext{\circ}{e_1+e_2} \}$. Otherwise, 
 
 
 \begin{align*}
