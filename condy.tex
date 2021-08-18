@@ -13,14 +13,14 @@ The structure of our stepper is shown in Figure \ref{fig:structure}. We use the 
 \end{figure}
 
 We now formally define the instruction transition judgement denoted as $\htrans{e_1}{e_2}$. Figure \ref{fig:decompose} shows some of the transition judgements. Then, we have the formal definition of evaluation context. We show some of rules in Figure \ref{fig:decompose}. For any expression, we define the decompose function $\mathtt{decompose}(e)$ which returns all evaluation contexts of $e$. The formal definition is given below:
-$$ \mathtt{decompose}(e) = \{ \epsilon\{e'\} | e = \epsilon\{e'\} \text{ and not } e' \mathtt{final} \}. $$
+$$ \mathtt{decompose}(e) = \{ \mathcal{E}\{e'\} | e = \mathcal{E}\{e'\} \text{ and not } e' \mathtt{final} \}. $$
 
 Unlike the regular evaluation context, this decompose function $\mathtt{decompose}$ will return a list of contexts that are steppable. So, there is a condition that $e'$ is not final. In general, we can see that if $\isFinal{e}$, $\mathtt{decompose}(e) = \emptyset$. We use addition as an example of non-final expressions. For expression $e_1 + e_2$, if both of them are final, we have $\mathtt{decompose}(e_1 + e_2) = \{ \hcontext{\circ}{e_1+e_2} \}$. Otherwise, 
 
 
 \begin{align*}
-  \mathtt{decompose}(e_1 + e_2) &= \{ \hcontext{(\epsilon_1 + e_2)}{e_1'} | \hcontext{\epsilon_1}{e_1'} \in \mathtt{decompose}(e_1)\} \\
-  &\cup \{ \hcontext{(e_1 + \epsilon_2)}{e_2'} | \hcontext{\epsilon_2}{e_2'} \in \mathtt{decompose}(e_2)\}.
+  \mathtt{decompose}(e_1 + e_2) &= \{ \hcontext{(\mathcal{E}_1 + e_2)}{e_1'} | \hcontext{\mathcal{E}_1}{e_1'} \in \mathtt{decompose}(e_1)\} \\
+  &\cup \{ \hcontext{(e_1 + \mathcal{E}_2)}{e_2'} | \hcontext{\mathcal{E}_2}{e_2'} \in \mathtt{decompose}(e_2)\}.
 \end{align*}
 
 
@@ -40,16 +40,16 @@ Unlike the regular evaluation context, this decompose function $\mathtt{decompos
   \end{subequations}
 
 $\arraycolsep=4pt\begin{array}{lll}
-\text{EvalCtx}~~ \epsilon & ::= &
+\text{EvalCtx}~~ \mathcal{E} & ::= &
   \circ  ~\vert~
-  \hap{\epsilon}{e} ~\vert~
-  \hap{e}{\epsilon} ~\vert~
-  \hhole{\epsilon} ~\vert~
-  \epsilon + e ~\vert~
-  e + \epsilon
+  \hap{\mathcal{E}}{e} ~\vert~
+  \hap{e}{\mathcal{E}} ~\vert~
+  \hhole{\mathcal{E}} ~\vert~
+  \mathcal{E} + e ~\vert~
+  e + \mathcal{E}
 \end{array}$
 
-\fbox{ $e = \hcontext{\epsilon}{e'}$}~~\text{$e$ is obtained by replacing the mark in $\epsilon$ with $e'$}\hfill
+\fbox{ $e = \hcontext{\mathcal{E}}{e'}$}~~\text{$e$ is obtained by replacing the mark in $\mathcal{E}$ with $e'$}\hfill
   \begin{subequations}\label{eqns:decompose}
   \begin{mathpar}
       \hfill
@@ -57,8 +57,8 @@ $\arraycolsep=4pt\begin{array}{lll}
           }{
             e = \hcontext{\circ}{e}
           }\hfill
-      \inferrule[FHAp1]{e_1 = \hcontext{\epsilon_1}{e_1'}}{\hap{e_1}{e_2} = \hcontext{\hap{\epsilon_1}{e_2}}{e_1'}}\hfill
-      \inferrule[FHAp2]{e_2 = \hcontext{\epsilon_2}{e_2'}}{\hap{e_1}{e_2} = \hcontext{\hap{e_1}{\epsilon_2}}{e_2'}}\hfill
+      \inferrule[FHAp1]{e_1 = \hcontext{\mathcal{E}_1}{e_1'}}{\hap{e_1}{e_2} = \hcontext{\hap{\mathcal{E}_1}{e_2}}{e_1'}}\hfill
+      \inferrule[FHAp2]{e_2 = \hcontext{\mathcal{E}_2}{e_2'}}{\hap{e_1}{e_2} = \hcontext{\hap{e_1}{\mathcal{E}_2}}{e_2'}}\hfill
       \hfill
   \end{mathpar}
 \end{subequations}
